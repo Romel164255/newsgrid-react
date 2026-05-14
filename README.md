@@ -1,16 +1,100 @@
-# React + Vite
+NewsGrid 📰
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern and responsive news application built with React and Vite that displays live news updates from around the world using the NewsAPI service.
 
-Currently, two official plugins are available:
+Features ✨
+Live news updates by category
+Responsive modern UI
+Hero section for top headline
+News cards layout
+Category filtering
+Loading state handling
+Mobile responsive design
+Clean and minimal interface
+Categories Available 📂
+General
+Technology
+Business
+Sports
+Health
+Tech Stack ⚙️
+React
+Vite
+CSS3
+NewsAPI
+Project Structure 📁
+src/
+│
+├── App.jsx
+├── App.css
+├── main.jsx
+└── assets/
+Installation 🚀
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Clone the repository:
 
-## React Compiler
+git clone https://github.com/your-username/newsgrid.git
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Go to the project folder:
 
-## Expanding the ESLint configuration
+cd newsgrid
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Install dependencies:
+
+npm install
+Environment Variables 🔑
+
+Create a .env file in the root directory and add your NewsAPI key:
+
+VITE_NEWS_API_KEY=your_api_key_here
+
+Get your free API key from:
+
+NewsAPI
+
+Run the Project ▶️
+
+Start the development server:
+
+npm run dev
+
+Build for production:
+
+npm run build
+
+Preview production build:
+
+npm run preview
+How It Works 🛠️
+
+The application fetches news articles dynamically using the NewsAPI endpoint:
+
+https://newsapi.org/v2/top-headlines
+
+When a user selects a category from the navbar, the app fetches related news articles and updates the UI automatically.
+
+Responsive Design 📱
+
+The app is fully responsive:
+
+3-column layout on desktop
+2-column layout on tablets
+1-column layout on mobile devices
+
+
+
+Future Improvements 🚧
+Search functionality
+Dark mode
+Infinite scrolling
+News by country
+Bookmark articles
+Authentication
+Pagination
+Author 👨‍💻
+
+Made with React and passion for learning frontend development.
+
+License 📄
+
+This project is open source and available under the MIT License.
