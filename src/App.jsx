@@ -6,10 +6,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("general");
 
-  // GNews API Key
-  const API_KEY = import.meta.env.VITE_GNEWS_API_KEY;
-
-  // Categories
+  // News Categories
   const categories = [
     "general",
     "technology",
@@ -18,7 +15,7 @@ function App() {
     "health",
   ];
 
-  // Fetch news whenever category changes
+  // Fetch News on Category Change
   useEffect(() => {
     fetchNews(category);
   }, [category]);
@@ -29,14 +26,19 @@ function App() {
       setLoading(true);
 
       const response = await fetch(
-        `https://gnews.io/api/v4/top-headlines?category=${selectedCategory}&lang=en&max=10&apikey=${API_KEY}`
+        `/api/news?category=${selectedCategory}`
       );
 
       const data = await response.json();
 
       console.log(data);
 
-      setArticles(data.articles || []);
+      if (data.articles) {
+        setArticles(data.articles);
+      } else {
+        setArticles([]);
+      }
+
     } catch (error) {
       console.log("Error fetching news:", error);
       setArticles([]);
@@ -114,7 +116,8 @@ function App() {
 
             <p>
               {articles[0].description ||
-                "Stay updated with the latest global news and trends."}
+                "Stay updated with the latest global news and trends."
+              }
             </p>
 
             <a
@@ -167,7 +170,8 @@ function App() {
 
                 <p>
                   {article.description ||
-                    "No description available for this article."}
+                    "No description available for this article."
+                  }
                 </p>
 
                 <a
