@@ -1,10 +1,20 @@
 export default async function handler(req, res) {
   const API_KEY = process.env.GNEWS_API_KEY;
 
-  const category = req.query.category || "general";
+  if (!API_KEY) {
+    return res.status(500).json({ error: "API key not configured on server." });
+  }
+
+  const allowedCategories = [
+    "general", "technology", "business", "sports", "health",
+    "entertainment", "science",
+  ];
+
+  const category = allowedCategories.includes(req.query.category)
+    ? req.query.category
+    : "general";
 
   try {
-
     const response = await fetch(
       `https://gnews.io/api/v4/top-headlines?category=${category}&lang=en&max=10&apikey=${API_KEY}`
     );
@@ -13,19 +23,18 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       return res.status(response.status).json({
-        error: data.errors || "Failed to fetch news",
+        error: data.errors?.[0] || "Failed to fetch news from provider.",
       });
     }
 
-    return res.status(200).json(data);
+    if (!data.articles || data.articles.length === 0) {
+      return res.status(200).json({ articles: [] });
+    }
+
+    return res.status(200).json({ articles: data.articles });
 
   } catch (error) {
-
-    console.log(error);
-
-    return res.status(500).json({
-      error: "Server Error",
-    });
-
+    console.error("[news handler]", error);
+    return res.status(500).json({ error: "Internal server error." });
   }
 }
