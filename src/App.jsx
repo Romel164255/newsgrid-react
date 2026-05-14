@@ -6,8 +6,10 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("general");
 
-  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+  // GNews API Key
+  const API_KEY = import.meta.env.VITE_GNEWS_API_KEY;
 
+  // Categories
   const categories = [
     "general",
     "technology",
@@ -16,23 +18,28 @@ function App() {
     "health",
   ];
 
+  // Fetch news whenever category changes
   useEffect(() => {
     fetchNews(category);
   }, [category]);
 
+  // Fetch News Function
   const fetchNews = async (selectedCategory) => {
     try {
       setLoading(true);
 
       const response = await fetch(
-        `https://newsapi.org/v2/top-headlines?country=us&category=${selectedCategory}&pageSize=10&apiKey=${API_KEY}`
+        `https://gnews.io/api/v4/top-headlines?category=${selectedCategory}&lang=en&max=10&apikey=${API_KEY}`
       );
 
       const data = await response.json();
 
+      console.log(data);
+
       setArticles(data.articles || []);
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching news:", error);
+      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -65,11 +72,19 @@ function App() {
 
       </nav>
 
-      {/* Breaking Bar */}
+      {/* Breaking News */}
 
       <div className="breaking-news">
         🚀 LIVE GLOBAL HEADLINES • REAL TIME NEWS UPDATES
       </div>
+
+      {/* Loading */}
+
+      {loading && (
+        <div className="loading">
+          Loading latest news...
+        </div>
+      )}
 
       {/* Hero Section */}
 
@@ -79,7 +94,7 @@ function App() {
 
           <img
             src={
-              articles[0].urlToImage ||
+              articles[0].image ||
               "https://via.placeholder.com/1200x500"
             }
             alt="hero"
@@ -93,7 +108,9 @@ function App() {
               Trending Now
             </span>
 
-            <h1>{articles[0].title}</h1>
+            <h1>
+              {articles[0].title}
+            </h1>
 
             <p>
               {articles[0].description ||
@@ -113,11 +130,11 @@ function App() {
         </section>
       )}
 
-      {/* Loading */}
+      {/* Empty State */}
 
-      {loading && (
+      {!loading && articles.length === 0 && (
         <div className="loading">
-          Loading latest news...
+          No news articles available.
         </div>
       )}
 
@@ -132,7 +149,7 @@ function App() {
 
               <img
                 src={
-                  article.urlToImage ||
+                  article.image ||
                   "https://via.placeholder.com/400x250"
                 }
                 alt="news"
@@ -144,7 +161,9 @@ function App() {
                   {category}
                 </div>
 
-                <h2>{article.title}</h2>
+                <h2>
+                  {article.title}
+                </h2>
 
                 <p>
                   {article.description ||
@@ -170,7 +189,9 @@ function App() {
 
       <footer className="footer">
 
-        <h3>NewsSphere</h3>
+        <h3>
+          NewsSphere
+        </h3>
 
         <p>
           Modern news platform delivering real-time
