@@ -8,6 +8,14 @@ function App() {
 
   const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
 
+  const categories = [
+    "general",
+    "technology",
+    "business",
+    "sports",
+    "health",
+  ];
+
   useEffect(() => {
     fetchNews(category);
   }, [category]);
@@ -22,7 +30,7 @@ function App() {
 
       const data = await response.json();
 
-      setArticles(data.articles);
+      setArticles(data.articles || []);
     } catch (error) {
       console.log(error);
     } finally {
@@ -34,37 +42,39 @@ function App() {
     <div className="app">
 
       {/* Navbar */}
+
       <nav className="navbar">
-        <h1 className="logo">NewsGrid</h1>
+
+        <div className="logo">
+          News<span>Sphere</span>
+        </div>
 
         <ul className="nav-links">
-          <li onClick={() => setCategory("general")}>Home</li>
 
-          <li onClick={() => setCategory("technology")}>
-            Technology
-          </li>
+          {categories.map((item) => (
+            <li
+              key={item}
+              className={category === item ? "active" : ""}
+              onClick={() => setCategory(item)}
+            >
+              {item}
+            </li>
+          ))}
 
-          <li onClick={() => setCategory("business")}>
-            Business
-          </li>
-
-          <li onClick={() => setCategory("sports")}>
-            Sports
-          </li>
-
-          <li onClick={() => setCategory("health")}>
-            Health
-          </li>
         </ul>
+
       </nav>
 
-      {/* Breaking News */}
+      {/* Breaking Bar */}
+
       <div className="breaking-news">
-        LIVE NEWS UPDATES FROM AROUND THE WORLD
+        🚀 LIVE GLOBAL HEADLINES • REAL TIME NEWS UPDATES
       </div>
 
       {/* Hero Section */}
+
       {!loading && articles.length > 0 && (
+
         <section className="hero-section">
 
           <img
@@ -75,65 +85,102 @@ function App() {
             alt="hero"
           />
 
+          <div className="overlay"></div>
+
           <div className="hero-content">
+
+            <span className="hero-tag">
+              Trending Now
+            </span>
+
             <h1>{articles[0].title}</h1>
 
-            <p>{articles[0].description}</p>
+            <p>
+              {articles[0].description ||
+                "Stay updated with the latest global news and trends."}
+            </p>
 
             <a
               href={articles[0].url}
               target="_blank"
               rel="noreferrer"
             >
-              Read Full Story
+              Read Full Story →
             </a>
+
           </div>
 
         </section>
       )}
 
       {/* Loading */}
-      {loading && <h2 className="loading">Loading News...</h2>}
+
+      {loading && (
+        <div className="loading">
+          Loading latest news...
+        </div>
+      )}
 
       {/* News Grid */}
+
       <section className="news-grid">
 
-        {articles.slice(1).map((article, index) => (
-          <div className="news-card" key={index}>
+        {!loading &&
+          articles.slice(1).map((article, index) => (
 
-            <img
-              src={
-                article.urlToImage ||
-                "https://via.placeholder.com/400x200"
-              }
-              alt="news"
-            />
+            <div className="news-card" key={index}>
 
-            <div className="news-content">
+              <img
+                src={
+                  article.urlToImage ||
+                  "https://via.placeholder.com/400x250"
+                }
+                alt="news"
+              />
 
-              <h2>{article.title}</h2>
+              <div className="news-content">
 
-              <p>
-                {article.description || "No description available"}
-              </p>
+                <div className="news-category">
+                  {category}
+                </div>
 
-              <a
-                href={article.url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Read More
-              </a>
+                <h2>{article.title}</h2>
+
+                <p>
+                  {article.description ||
+                    "No description available for this article."}
+                </p>
+
+                <a
+                  href={article.url}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Read More →
+                </a>
+
+              </div>
 
             </div>
-          </div>
-        ))}
+          ))}
 
       </section>
 
       {/* Footer */}
+
       <footer className="footer">
-        <p>© 2026 NewsGrid. All rights reserved.</p>
+
+        <h3>NewsSphere</h3>
+
+        <p>
+          Modern news platform delivering real-time
+          updates from around the world.
+        </p>
+
+        <span>
+          © 2026 NewsSphere. All rights reserved.
+        </span>
+
       </footer>
 
     </div>
