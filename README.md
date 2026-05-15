@@ -31,34 +31,34 @@ src/
 └── assets/
 Installation 🚀
 
-Clone the repository:
+** Clone the repository:
 
-git clone https://github.com/your-username/newsgrid.git
+git clone https://github.com/Romel164255/newsgrid-react.git
 
-Go to the project folder:
+** Go to the project folder:
 
 cd newsgrid
 
-Install dependencies:
+** Install dependencies:
 
 npm install
 Environment Variables 🔑
 
-Create a .env file in the root directory and add your NewsAPI key:
+** Create a .env file in the root directory and add your NewsAPI key:
 
 VITE_NEWS_API_KEY=your_api_key_here
 
-Get your free API key from:
+** Get your free API key from:
 
 NewsAPI
 
 Run the Project ▶️
 
-Start the development server:
+** Start the development server:
 
 npm run dev
 
-Build for production:
+** Build for production:
 
 npm run build
 
