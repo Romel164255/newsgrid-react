@@ -1,10 +1,8 @@
 import "./App.css";
 
 import {
-
-useEffect,
-useState
-
+  useEffect,
+  useState
 } from "react";
 
 import Navbar from "./components/Navbar";
@@ -15,139 +13,141 @@ import Footer from "./components/Footer";
 import useLocation from "./hooks/useLocation";
 
 import {
-getNews
-}
-from "./services/newsApi";
+  getNews
+} from "./services/newsApi";
 
-function App(){
+function App() {
 
-const country=
-useLocation();
+  const {
+    country,
+    city
+  } = useLocation();
 
-const[articles,
-setArticles]=
-useState([]);
+  const [articles, setArticles] = useState([]);
 
-const[loading,
-setLoading]=
-useState(true);
+  const [loading, setLoading] = useState(true);
 
-const[category,
-setCategory]=
-useState("general");
+  const [category, setCategory] =
+    useState("general");
 
-const categories=[
+  const categories = [
+    "general",
+    "technology",
+    "business",
+    "sports",
+    "health"
+  ];
 
-"general",
-"technology",
-"business",
-"sports",
-"health"
+  useEffect(() => {
 
-];
+    fetchNews();
 
-useEffect(()=>{
+  }, [category, country, city]);
 
-fetchNews();
 
-},[category,country]);
 
-async function fetchNews(){
+  async function fetchNews() {
 
-try{
+    try {
 
-setLoading(true);
+      setLoading(true);
 
-const data=
-await getNews(
+      const data =
+        await getNews(
+          category,
+          country,
+          city
+        );
 
-category,
-country
+      setArticles(data);
 
-);
+    }
+    catch (error) {
 
-setArticles(data);
+      console.log(error);
 
-}
+      setArticles([]);
 
-catch(error){
+    }
+    finally {
 
-console.log(error);
+      setLoading(false);
 
-setArticles([]);
+    }
 
-}
+  }
 
-finally{
 
-setLoading(false);
 
-}
+  return (
 
-}
+    <div className="app">
 
-return(
+      <Navbar
+        categories={categories}
+        category={category}
+        setCategory={setCategory}
+      />
 
-<div className="app">
+      <div className="breaking-news">
 
-<Navbar
-categories={categories}
-category={category}
-setCategory={setCategory}
-/>
+        🚀 LIVE NEWS • {city}
 
-<div className="breaking-news">
+      </div>
 
-🚀 LIVE NEWS
 
-</div>
+      {loading && (
 
-{loading && (
+        <div className="loading">
 
-<div className="loading">
+          Loading...
 
-Loading...
+        </div>
 
-</div>
+      )}
 
-)}
 
-{!loading &&
-articles.length>0 &&(
 
-<Hero
-article={
-articles[0]
-}
-/>
+      {!loading &&
+        articles.length > 0 && (
 
-)}
+          <Hero
+            article={
+              articles[0]
+            }
+          />
 
-<section className="news-grid">
+        )}
 
-{articles
-.slice(1)
-.map((article,index)=>(
 
-<NewsCard
 
-key={index}
+      <section className="news-grid">
 
-article={article}
+        {!loading &&
 
-category={category}
+          articles
+            .slice(1)
+            .map((article, index) => (
 
-/>
+              <NewsCard
 
-))}
+                key={index}
 
-</section>
+                article={article}
 
-<Footer/>
+                category={category}
 
-</div>
+              />
 
-);
+            ))}
+
+      </section>
+
+      <Footer />
+
+    </div>
+
+  );
 
 }
 

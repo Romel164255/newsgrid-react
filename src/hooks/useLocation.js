@@ -1,55 +1,66 @@
-import {useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 
-export default function useLocation(){
+export default function useLocation() {
 
-const [country,setCountry]=useState("in");
+  const [location, setLocation] = useState({
+    country: "in",
+    city: "India"
+  });
 
-useEffect(()=>{
+  useEffect(() => {
 
-navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition(
 
-async(position)=>{
+      async (position) => {
 
-try{
+        try {
 
-const lat=position.coords.latitude;
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
 
-const lon=position.coords.longitude;
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`
+          );
 
-const response=await fetch(
+          const data = await response.json();
 
-`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`
+          setLocation({
+            country:
+              data.countryCode?.toLowerCase() || "in",
 
-);
+            city:
+              data.city ||
+              data.locality ||
+              "India"
+          });
 
-const data=await response.json();
+        }
+        catch (error) {
 
-setCountry(
+          console.log(error);
 
-data.countryCode.toLowerCase()
+          setLocation({
+            country: "in",
+            city: "India"
+          });
 
-);
+        }
 
-}
+      },
 
-catch{
+      () => {
 
-setCountry("in");
+        setLocation({
+          country: "in",
+          city: "India"
+        });
 
-}
+      }
 
-},
+    );
 
-()=>{
+  }, []);
 
-setCountry("in");
-
-}
-
-);
-
-},[]);
-
-return country;
+  return location;
 
 }

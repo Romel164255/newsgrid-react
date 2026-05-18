@@ -1,8 +1,12 @@
-export async function getNews(category,country){
+export async function getNews(
+  category,
+  country,
+  city
+){
 
-const response=await fetch(
+const response = await fetch(
 
-`/api/news?category=${category}&country=${country}`
+`/api/news?category=${category}&country=${country}&city=${city}`
 
 );
 
@@ -14,7 +18,7 @@ throw new Error(
 
 }
 
-const data=await response.json();
+const data = await response.json();
 
 return data.articles;
 
