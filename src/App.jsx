@@ -89,9 +89,18 @@ function App() {
         setCategory={setCategory}
       />
 
-      <div className="breaking-news">
+      <div
+        style={{
+        padding:"10px",
+        margin:"10px",
+        fontSize:"14px"
+              }}
+      >
 
-        🚀 LIVE NEWS • {city}
+      Country: {country}
+      <br/>
+
+      City: {city}
 
       </div>
 
