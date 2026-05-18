@@ -1,215 +1,154 @@
-import { useEffect, useState } from "react";
 import "./App.css";
 
-function App() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState("general");
+import {
 
-  // News Categories
-  const categories = [
-    "general",
-    "technology",
-    "business",
-    "sports",
-    "health",
-  ];
+useEffect,
+useState
 
-  // Fetch News on Category Change
-  useEffect(() => {
-    fetchNews(category);
-  }, [category]);
+} from "react";
 
-  // Fetch News Function
-  const fetchNews = async (selectedCategory) => {
-    try {
-      setLoading(true);
+import Navbar from "./components/Navbar";
+import Hero from "./components/Hero";
+import NewsCard from "./components/NewsCard";
+import Footer from "./components/Footer";
 
-      const response = await fetch(
-        `/api/news?category=${selectedCategory}`
-      );
+import useLocation from "./hooks/useLocation";
 
-      const data = await response.json();
+import {
+getNews
+}
+from "./services/newsApi";
 
-      console.log(data);
+function App(){
 
-      if (data.articles) {
-        setArticles(data.articles);
-      } else {
-        setArticles([]);
-      }
+const country=
+useLocation();
 
-    } catch (error) {
-      console.log("Error fetching news:", error);
-      setArticles([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+const[articles,
+setArticles]=
+useState([]);
 
-  return (
-    <div className="app">
+const[loading,
+setLoading]=
+useState(true);
 
-      {/* Navbar */}
+const[category,
+setCategory]=
+useState("general");
 
-      <nav className="navbar">
+const categories=[
 
-        <div className="logo">
-          News<span>Sphere</span>
-        </div>
+"general",
+"technology",
+"business",
+"sports",
+"health"
 
-        <ul className="nav-links">
+];
 
-          {categories.map((item) => (
-            <li
-              key={item}
-              className={category === item ? "active" : ""}
-              onClick={() => setCategory(item)}
-            >
-              {item}
-            </li>
-          ))}
+useEffect(()=>{
 
-        </ul>
+fetchNews();
 
-      </nav>
+},[category,country]);
 
-      {/* Breaking News */}
+async function fetchNews(){
 
-      <div className="breaking-news">
-        🚀 LIVE GLOBAL HEADLINES • REAL TIME NEWS UPDATES
-      </div>
+try{
 
-      {/* Loading */}
+setLoading(true);
 
-      {loading && (
-        <div className="loading">
-          Loading latest news...
-        </div>
-      )}
+const data=
+await getNews(
 
-      {/* Hero Section */}
+category,
+country
 
-      {!loading && articles.length > 0 && (
+);
 
-        <section className="hero-section">
+setArticles(data);
 
-          <img
-            src={
-              articles[0].image ||
-              "https://via.placeholder.com/1200x500"
-            }
-            alt="hero"
-          />
+}
 
-          <div className="overlay"></div>
+catch(error){
 
-          <div className="hero-content">
+console.log(error);
 
-            <span className="hero-tag">
-              Trending Now
-            </span>
+setArticles([]);
 
-            <h1>
-              {articles[0].title}
-            </h1>
+}
 
-            <p>
-              {articles[0].description ||
-                "Stay updated with the latest global news and trends."
-              }
-            </p>
+finally{
 
-            <a
-              href={articles[0].url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Read Full Story →
-            </a>
+setLoading(false);
 
-          </div>
+}
 
-        </section>
-      )}
+}
 
-      {/* Empty State */}
+return(
 
-      {!loading && articles.length === 0 && (
-        <div className="loading">
-          No news articles available.
-        </div>
-      )}
+<div className="app">
 
-      {/* News Grid */}
+<Navbar
+categories={categories}
+category={category}
+setCategory={setCategory}
+/>
 
-      <section className="news-grid">
+<div className="breaking-news">
 
-        {!loading &&
-          articles.slice(1).map((article, index) => (
+🚀 LIVE NEWS
 
-            <div className="news-card" key={index}>
+</div>
 
-              <img
-                src={
-                  article.image ||
-                  "https://via.placeholder.com/400x250"
-                }
-                alt="news"
-              />
+{loading && (
 
-              <div className="news-content">
+<div className="loading">
 
-                <div className="news-category">
-                  {category}
-                </div>
+Loading...
 
-                <h2>
-                  {article.title}
-                </h2>
+</div>
 
-                <p>
-                  {article.description ||
-                    "No description available for this article."
-                  }
-                </p>
+)}
 
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Read More →
-                </a>
+{!loading &&
+articles.length>0 &&(
 
-              </div>
+<Hero
+article={
+articles[0]
+}
+/>
 
-            </div>
-          ))}
+)}
 
-      </section>
+<section className="news-grid">
 
-      {/* Footer */}
+{articles
+.slice(1)
+.map((article,index)=>(
 
-      <footer className="footer">
+<NewsCard
 
-        <h3>
-          NewsSphere
-        </h3>
+key={index}
 
-        <p>
-          Modern news platform delivering real-time
-          updates from around the world.
-        </p>
+article={article}
 
-        <span>
-          © 2026 NewsSphere. All rights reserved.
-        </span>
+category={category}
 
-      </footer>
+/>
 
-    </div>
-  );
+))}
+
+</section>
+
+<Footer/>
+
+</div>
+
+);
+
 }
 
 export default App;
