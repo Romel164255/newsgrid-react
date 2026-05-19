@@ -13,10 +13,17 @@ lang="en"
 
 }=req.query;
 
-
 try{
 
 let url="";
+
+/* GNews Hindi fallback */
+
+const apiLanguage=
+
+lang==="hi"
+? "en"
+: lang;
 
 
 /* SEARCH */
@@ -25,7 +32,7 @@ if(search.trim()){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${lang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
 
 }
 
@@ -36,7 +43,7 @@ else if(city!=="India"){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${lang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
 
 }
 
@@ -47,16 +54,34 @@ else{
 
 url=
 
-`https://gnews.io/api/v4/top-headlines?category=${category}&country=${country}&lang=${lang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/top-headlines?category=${category}&country=${country}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
 
 }
 
+
+console.log("FETCH:",url);
 
 const response=
 await fetch(url);
 
 const data=
 await response.json();
+
+if(!response.ok){
+
+console.log(data);
+
+return res.status(response.status).json({
+
+error:
+data.errors?.[0]
+||
+"Failed"
+
+});
+
+}
+
 
 return res.status(200).json({
 
