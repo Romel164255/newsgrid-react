@@ -10,103 +10,111 @@ function Navbar({
   language,
   setLanguage
 
-}) {
+}){
 
-  return (
+return(
 
-    <nav className="navbar">
+<nav className="navbar">
 
-      <div className="logo">
+<div className="top-nav">
 
-        News<span>Sphere</span>
+<div className="logo">
 
-      </div>
+News<span>Sphere</span>
 
-
-      <div className="nav-controls">
-
-        <input
-
-          type="text"
-
-          placeholder="Search news..."
-
-          value={search}
-
-          onChange={(e)=>
-            setSearch(
-              e.target.value
-            )
-          }
-
-          className="search-box"
-
-        />
+</div>
 
 
-        <select
+<input
 
-          value={language}
+type="text"
 
-          onChange={(e)=>
-            setLanguage(
-              e.target.value
-            )
-          }
+placeholder="🔍 Search news..."
 
-          className="language-select"
+value={search}
 
-        >
+onChange={(e)=>
+setSearch(
+e.target.value
+)
+}
 
-          <option value="en">
+className="search-box"
 
-            English
+/>
 
-          </option>
 
-          <option value="hi">
+<button
 
-            Hindi
+className="language-btn"
 
-          </option>
+onClick={()=>{
 
-        </select>
+setLanguage(
 
-      </div>
+language==="en"
+? "hi"
+: "en"
+
+)
+
+}}
+
+>
+
+{language.toUpperCase()}
+
+</button>
+
+</div>
 
 
 
-      <ul className="nav-links">
+<ul className="nav-links">
 
-        {categories.map((item) => (
+{
 
-          <li
+categories.map(
 
-            key={item}
+(item)=>(
 
-            className={
-              category === item
-                ? "active"
-                : ""
-            }
+<li
 
-            onClick={() =>
-              setCategory(item)
-            }
+key={item}
 
-          >
+className={
 
-            {item}
+category===item
+?
+"active"
+:
+""
 
-          </li>
+}
 
-        ))}
+onClick={()=>
 
-      </ul>
+setCategory(
+item
+)
 
-    </nav>
+}
 
-  );
+>
+
+{item}
+
+</li>
+
+))
+
+}
+
+</ul>
+
+</nav>
+
+)
 
 }
 
