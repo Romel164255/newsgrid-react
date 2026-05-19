@@ -1,14 +1,11 @@
 export default async function handler(req,res){
 
-const API_KEY=
-process.env.GNEWS_API_KEY;
+const API_KEY=process.env.GNEWS_API_KEY;
 
 if(!API_KEY){
 
 return res.status(500).json({
-
 error:"API key missing"
-
 });
 
 }
@@ -29,13 +26,13 @@ try{
 let url="";
 
 
-/* SEARCH BAR */
+/* SEARCH BAR ALWAYS TAKES PRIORITY */
 
-if(search){
+if(search.trim()){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${search}&lang=${lang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
 }
 
@@ -46,12 +43,12 @@ else if(city!=="India"){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${city}+${category}&lang=${lang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
 }
 
 
-/* DEFAULT */
+/* DEFAULT COUNTRY HEADLINES */
 
 else{
 
@@ -62,19 +59,15 @@ url=
 }
 
 
-console.log(url);
+console.log("Fetching:",url);
 
-const response=
-await fetch(url);
+const response=await fetch(url);
 
-const data=
-await response.json();
-
+const data=await response.json();
 
 return res.status(200).json({
 
-articles:
-data.articles || []
+articles:data.articles || []
 
 });
 
@@ -86,8 +79,7 @@ console.log(error);
 
 return res.status(500).json({
 
-error:
-"Internal server error"
+error:"Internal server error"
 
 });
 
