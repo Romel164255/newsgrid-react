@@ -1,7 +1,8 @@
 function NewsCard({
 
 article,
-category
+category,
+language
 
 }){
 
@@ -26,19 +27,51 @@ article.image ||
 
 <h2>
 
-{article.title}
+{
+
+language==="hi"
+
+?
+
+"🇮🇳 " + article.title
+
+:
+
+article.title
+
+}
 
 </h2>
 
 <p>
 
-{article.description}
+{
+
+language==="hi"
+
+?
+
+"हिंदी: " +
+(
+article.description ||
+"No description"
+)
+
+:
+
+(
+article.description ||
+"No description"
+)
+
+}
 
 </p>
 
 <a
 href={article.url}
 target="_blank"
+rel="noreferrer"
 >
 
 Read More →
@@ -49,7 +82,7 @@ Read More →
 
 </div>
 
-);
+)
 
 }
 

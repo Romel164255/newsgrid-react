@@ -238,6 +238,8 @@ article={article}
 
 category={category}
 
+language={language}
+
 />
 
 ))

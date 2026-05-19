@@ -18,11 +18,6 @@ try{
 
 let url="";
 
-const safeLang=
-lang==="hi"
-? "en"
-: lang;
-
 
 /* SEARCH */
 
@@ -30,7 +25,7 @@ if(search.trim()){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${safeLang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
 }
 
@@ -41,7 +36,7 @@ else if(city!=="India"){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${safeLang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
 }
 
@@ -52,7 +47,7 @@ else{
 
 url=
 
-`https://gnews.io/api/v4/top-headlines?category=${category}&country=${country}&lang=${safeLang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/top-headlines?category=${category}&country=${country}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
 }
 
