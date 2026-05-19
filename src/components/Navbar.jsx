@@ -1,49 +1,112 @@
 function Navbar({
 
-categories,
-category,
-setCategory
+  categories,
+  category,
+  setCategory,
 
-}){
+  search,
+  setSearch,
 
-return(
+  language,
+  setLanguage
 
-<nav className="navbar">
+}) {
 
-<div className="logo">
+  return (
 
-News<span>Sphere</span>
+    <nav className="navbar">
 
-</div>
+      <div className="logo">
 
-<ul className="nav-links">
+        News<span>Sphere</span>
 
-{categories.map((item)=>(
+      </div>
 
-<li
-key={item}
-className={
-category===item
-? "active"
-: ""
-}
 
-onClick={()=>
-setCategory(item)
-}
->
+      <div className="nav-controls">
 
-{item}
+        <input
 
-</li>
+          type="text"
 
-))}
+          placeholder="Search news..."
 
-</ul>
+          value={search}
 
-</nav>
+          onChange={(e)=>
+            setSearch(
+              e.target.value
+            )
+          }
 
-);
+          className="search-box"
+
+        />
+
+
+        <select
+
+          value={language}
+
+          onChange={(e)=>
+            setLanguage(
+              e.target.value
+            )
+          }
+
+          className="language-select"
+
+        >
+
+          <option value="en">
+
+            English
+
+          </option>
+
+          <option value="hi">
+
+            Hindi
+
+          </option>
+
+        </select>
+
+      </div>
+
+
+
+      <ul className="nav-links">
+
+        {categories.map((item) => (
+
+          <li
+
+            key={item}
+
+            className={
+              category === item
+                ? "active"
+                : ""
+            }
+
+            onClick={() =>
+              setCategory(item)
+            }
+
+          >
+
+            {item}
+
+          </li>
+
+        ))}
+
+      </ul>
+
+    </nav>
+
+  );
 
 }
 

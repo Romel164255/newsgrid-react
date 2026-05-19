@@ -14,7 +14,8 @@ import useLocation from "./hooks/useLocation";
 
 import {
   getNews
-} from "./services/newsApi";
+}
+from "./services/newsApi";
 
 function App() {
 
@@ -23,26 +24,53 @@ function App() {
     city
   } = useLocation();
 
-  const [articles, setArticles] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+
+  const [articles, setArticles] =
+  useState([]);
+
+  const [loading, setLoading] =
+  useState(true);
 
   const [category, setCategory] =
-    useState("general");
+  useState("general");
+
+  const [search, setSearch] =
+  useState("");
+
+  const [language, setLanguage] =
+  useState("en");
+
+
 
   const categories = [
+
     "general",
     "technology",
     "business",
     "sports",
     "health"
+
   ];
+
+
 
   useEffect(() => {
 
     fetchNews();
 
-  }, [category, country, city]);
+  },
+
+  [
+
+    category,
+    country,
+    city,
+    search,
+    language
+
+  ]);
+
 
 
 
@@ -53,23 +81,30 @@ function App() {
       setLoading(true);
 
       const data =
-        await getNews(
-          category,
-          country,
-          city
-        );
+
+      await getNews(
+
+        category,
+        country,
+        city,
+        search,
+        language
+
+      );
 
       setArticles(data);
 
     }
-    catch (error) {
+
+    catch(error){
 
       console.log(error);
 
       setArticles([]);
 
     }
-    finally {
+
+    finally{
 
       setLoading(false);
 
@@ -79,30 +114,34 @@ function App() {
 
 
 
+
   return (
 
     <div className="app">
 
+
       <Navbar
+
         categories={categories}
+
         category={category}
         setCategory={setCategory}
+
+        search={search}
+        setSearch={setSearch}
+
+        language={language}
+        setLanguage={setLanguage}
+
       />
 
-      <div
-        style={{
-        padding:"10px",
-        margin:"10px",
-        fontSize:"14px"
-              }}
-      >
 
-      Country: {country}
-      <br/>
+      <div className="breaking-news">
 
-      City: {city}
+        🚀 LIVE NEWS • {city}
 
       </div>
+
 
 
       {loading && (
@@ -118,41 +157,51 @@ function App() {
 
 
       {!loading &&
-        articles.length > 0 && (
+      articles.length > 0 && (
 
-          <Hero
-            article={
-              articles[0]
-            }
-          />
+        <Hero
 
-        )}
+          article={
+            articles[0]
+          }
+
+        />
+
+      )}
 
 
 
       <section className="news-grid">
 
-        {!loading &&
+        {
 
-          articles
-            .slice(1)
-            .map((article, index) => (
+        !loading &&
 
-              <NewsCard
+        articles
+        .slice(1)
+        .map(
 
-                key={index}
+          (article,index)=>(
 
-                article={article}
+          <NewsCard
 
-                category={category}
+            key={index}
 
-              />
+            article={article}
 
-            ))}
+            category={category}
+
+          />
+
+        ))
+
+        }
 
       </section>
 
-      <Footer />
+
+
+      <Footer/>
 
     </div>
 
