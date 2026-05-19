@@ -29,7 +29,7 @@ try{
 let url="";
 
 
-/* Search takes priority */
+/* SEARCH BAR */
 
 if(search){
 
@@ -40,18 +40,18 @@ url=
 }
 
 
-/* Location news */
+/* LOCATION + CATEGORY */
 
 else if(city!=="India"){
 
 url=
 
-`https://gnews.io/api/v4/search?q=${city}&lang=${lang}&max=10&apikey=${API_KEY}`;
+`https://gnews.io/api/v4/search?q=${city}+${category}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
 }
 
 
-/* Default country headlines */
+/* DEFAULT */
 
 else{
 
@@ -62,26 +62,13 @@ url=
 }
 
 
+console.log(url);
+
 const response=
 await fetch(url);
 
 const data=
 await response.json();
-
-if(!response.ok){
-
-return res.status(
-response.status
-).json({
-
-error:
-data.errors?.[0]
-||
-"News fetch failed"
-
-});
-
-}
 
 
 return res.status(200).json({
