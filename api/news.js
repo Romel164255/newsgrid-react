@@ -17,16 +17,11 @@ try{
 
 let url="";
 
-/* GNews Hindi fallback */
-
 const apiLanguage=
-
 lang==="hi"
 ? "en"
 : lang;
 
-
-/* SEARCH */
 
 if(search.trim()){
 
@@ -36,9 +31,6 @@ url=
 
 }
 
-
-/* LOCATION + CATEGORY */
-
 else if(city!=="India"){
 
 url=
@@ -46,9 +38,6 @@ url=
 `https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
 
 }
-
-
-/* DEFAULT */
 
 else{
 
@@ -58,25 +47,50 @@ url=
 
 }
 
-
-console.log("FETCH:",url);
-
 const response=
 await fetch(url);
 
 const data=
 await response.json();
 
+
 if(!response.ok){
 
-console.log(data);
+if(
+data.errors?.[0]
+?.includes(
+"request limit"
+)
+){
 
-return res.status(response.status).json({
+return res.status(200).json({
+
+articles:[
+
+{
+
+title:
+"Daily request limit reached",
+
+description:
+"GNews free API limit reached. Please try again after reset.",
+
+url:"#",
+
+image:null
+
+}
+
+]
+
+});
+
+}
+
+return res.status(500).json({
 
 error:
-data.errors?.[0]
-||
-"Failed"
+"Failed fetching news"
 
 });
 
