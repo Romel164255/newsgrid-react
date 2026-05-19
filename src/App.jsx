@@ -1,211 +1,256 @@
 import "./App.css";
 
 import {
-  useEffect,
-  useState
-} from "react";
+useEffect,
+useState
+}
+from "react";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import NewsCard from "./components/NewsCard";
 import Footer from "./components/Footer";
+import WeatherCard from "./components/WeatherCard";
 
 import useLocation from "./hooks/useLocation";
 
 import {
-  getNews
+getNews
 }
 from "./services/newsApi";
 
-function App() {
+import {
+getWeather
+}
+from "./services/weatherApi";
 
-  const {
-    country,
-    city
-  } = useLocation();
+function App(){
 
+const {
 
+country,
+city,
+lat,
+lon
 
-  const [articles, setArticles] =
-  useState([]);
+}=useLocation();
 
-  const [loading, setLoading] =
-  useState(true);
+const[
+articles,
+setArticles
+]=useState([]);
 
-  const [category, setCategory] =
-  useState("general");
+const[
+weather,
+setWeather
+]=useState(null);
 
-  const [search, setSearch] =
-  useState("");
+const[
+loading,
+setLoading
+]=useState(true);
 
-  const [language, setLanguage] =
-  useState("en");
+const[
+category,
+setCategory
+]=useState("general");
 
+const[
+search,
+setSearch
+]=useState("");
 
+const[
+language,
+setLanguage
+]=useState("en");
 
-  const categories = [
 
-    "general",
-    "technology",
-    "business",
-    "sports",
-    "health"
+const categories=[
 
-  ];
+"general",
+"technology",
+"business",
+"sports",
+"health"
 
+];
 
 
-  useEffect(() => {
+/* DEBOUNCE */
 
-    fetchNews();
+useEffect(()=>{
 
-  },
+const timer=
 
-  [
+setTimeout(()=>{
 
-    category,
-    country,
-    city,
-    search,
-    language
+fetchNews();
 
-  ]);
+},500);
 
+return()=>clearTimeout(timer);
 
+},
+[
+category,
+country,
+city,
+search,
+language
+]);
 
 
-  async function fetchNews() {
+/* WEATHER */
 
-    try {
+useEffect(()=>{
 
-      setLoading(true);
+fetchWeather();
 
-      const data =
+},
+[
+lat,
+lon
+]);
 
-      await getNews(
 
-        category,
-        country,
-        city,
-        search,
-        language
+async function fetchNews(){
 
-      );
+try{
 
-      setArticles(data);
+setLoading(true);
 
-    }
+const data=
 
-    catch(error){
+await getNews(
 
-      console.log(error);
+category,
+country,
+city,
+search,
+language
 
-      setArticles([]);
+);
 
-    }
+setArticles(data);
 
-    finally{
+}
 
-      setLoading(false);
+catch{
 
-    }
+setArticles([]);
 
-  }
+}
 
+finally{
 
+setLoading(false);
 
+}
 
-  return (
+}
 
-    <div className="app">
 
+async function fetchWeather(){
 
-      <Navbar
+if(!lat||!lon)
+return;
 
-        categories={categories}
+const data=
 
-        category={category}
-        setCategory={setCategory}
+await getWeather(
+lat,
+lon
+);
 
-        search={search}
-        setSearch={setSearch}
+setWeather(data);
 
-        language={language}
-        setLanguage={setLanguage}
+}
 
-      />
 
+return(
 
-      <div className="breaking-news">
+<div className="app">
 
-        🚀 LIVE NEWS • {city}
+<Navbar
 
-      </div>
+categories={categories}
 
+category={category}
+setCategory={setCategory}
 
+search={search}
+setSearch={setSearch}
 
-      {loading && (
+language={language}
+setLanguage={setLanguage}
 
-        <div className="loading">
+/>
 
-          Loading...
+<div className="breaking-news">
 
-        </div>
+🚀 LIVE NEWS • {city}
 
-      )}
+</div>
 
+<WeatherCard
+weather={weather}
+/>
 
+{
 
-      {!loading &&
-      articles.length > 0 && (
+loading&&
 
-        <Hero
+<div className="loading">
 
-          article={
-            articles[0]
-          }
+Loading...
 
-        />
+</div>
 
-      )}
+}
 
 
+{
 
-      <section className="news-grid">
+!loading&&
+articles.length>0&&
 
-        {
+<Hero
+article={articles[0]}
+/>
 
-        !loading &&
+}
 
-        articles
-        .slice(1)
-        .map(
 
-          (article,index)=>(
+<section className="news-grid">
 
-          <NewsCard
+{
 
-            key={index}
+articles
+.slice(1)
+.map((article,index)=>(
 
-            article={article}
+<NewsCard
 
-            category={category}
+key={index}
 
-          />
+article={article}
 
-        ))
+category={category}
 
-        }
+/>
 
-      </section>
+))
 
+}
 
+</section>
 
-      <Footer/>
+<Footer/>
 
-    </div>
+</div>
 
-  );
+)
 
 }
 
