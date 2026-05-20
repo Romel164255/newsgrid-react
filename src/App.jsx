@@ -1,10 +1,6 @@
 import "./App.css";
 
-import {
-useEffect,
-useState
-}
-from "react";
+import {useEffect,useState} from "react";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -14,15 +10,8 @@ import WeatherCard from "./components/WeatherCard";
 
 import useLocation from "./hooks/useLocation";
 
-import {
-getNews
-}
-from "./services/newsApi";
-
-import {
-getWeather
-}
-from "./services/weatherApi";
+import {getNews} from "./services/newsApi";
+import {getWeather} from "./services/weatherApi";
 
 function App(){
 
@@ -35,35 +24,21 @@ lon
 
 }=useLocation();
 
-const[
-articles,
-setArticles
-]=useState([]);
 
-const[
-weather,
-setWeather
-]=useState(null);
+const[articles,setArticles]=useState([]);
+const[weather,setWeather]=useState(null);
 
-const[
-loading,
-setLoading
-]=useState(true);
+const[loading,setLoading]=useState(true);
 
-const[
-category,
-setCategory
-]=useState("general");
+const[category,setCategory]=useState(
+"general"
+);
 
-const[
-search,
-setSearch
-]=useState("");
+const[search,setSearch]=useState("");
 
-const[
-language,
-setLanguage
-]=useState("en");
+const[language,setLanguage]=useState(
+"en"
+);
 
 
 const categories=[
@@ -77,7 +52,7 @@ const categories=[
 ];
 
 
-/* DEBOUNCE */
+/* NEWS DEBOUNCE */
 
 useEffect(()=>{
 
@@ -151,10 +126,12 @@ setLoading(false);
 }
 
 
+
 async function fetchWeather(){
 
-if(!lat||!lon)
-return;
+if(!lat||!lon)return;
+
+try{
 
 const data=
 
@@ -164,6 +141,14 @@ lon
 );
 
 setWeather(data);
+
+}
+
+catch{
+
+setWeather(null);
+
+}
 
 }
 
@@ -187,15 +172,22 @@ setLanguage={setLanguage}
 
 />
 
-<div className="breaking-news">
 
-🚀 LIVE NEWS • {city}
+<div className="news-banner">
+
+THE DAILY SPHERE • {city.toUpperCase()}
 
 </div>
+
+
+<div className="top-bar">
 
 <WeatherCard
 weather={weather}
 />
+
+</div>
+
 
 {
 
@@ -203,7 +195,7 @@ loading&&
 
 <div className="loading">
 
-Loading...
+Loading News...
 
 </div>
 
@@ -212,8 +204,8 @@ Loading...
 
 {
 
-!loading&&
-articles.length>0&&
+!loading &&
+articles.length>0 &&
 
 <Hero
 article={articles[0]}

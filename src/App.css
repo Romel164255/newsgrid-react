@@ -444,6 +444,77 @@ gap:30px;
 padding-bottom:80px;
 
 }
+/* NEWSPAPER HEADER */
+
+.news-banner{
+
+width:92%;
+
+margin:30px auto;
+
+padding:14px;
+
+text-align:center;
+
+font-family:
+"Playfair Display",
+serif;
+
+font-size:22px;
+
+font-weight:700;
+
+letter-spacing:2px;
+
+border-top:
+2px solid #8b0000;
+
+border-bottom:
+2px solid #8b0000;
+
+}
+
+
+/* TOP INFO BAR */
+
+.top-bar{
+
+width:92%;
+
+margin:auto;
+
+margin-bottom:30px;
+
+display:flex;
+
+justify-content:center;
+
+}
+
+
+/* WEATHER MINI */
+
+.weather-mini{
+
+display:flex;
+
+align-items:center;
+
+gap:12px;
+
+padding:12px 22px;
+
+border-radius:999px;
+
+background:#fffaf0;
+
+border:1px solid #d1d5db;
+
+font-size:14px;
+
+color:#6b7280;
+
+}
 
 
 /* CARD */
