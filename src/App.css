@@ -288,6 +288,8 @@ color:#6b7280;
 
 width:92%;
 
+min-height:550px;
+
 height:550px;
 
 margin:auto;
@@ -334,6 +336,7 @@ transparent
 
 }
 
+
 .hero-content{
 
 position:absolute;
@@ -342,9 +345,13 @@ bottom:40px;
 
 left:40px;
 
+right:40px;
+
 max-width:700px;
 
 color:white;
+
+overflow:hidden;
 
 }
 
@@ -368,9 +375,29 @@ font-family:
 "Playfair Display",
 serif;
 
-font-size:60px;
+font-size:clamp(
+28px,
+4vw,
+54px
+);
+
+line-height:1.15;
 
 margin-bottom:20px;
+
+display:-webkit-box;
+
+-webkit-line-clamp:3;
+
+-webkit-box-orient:vertical;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+max-width:90%;
+
+word-wrap:break-word;
 
 }
 
