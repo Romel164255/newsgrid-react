@@ -40,7 +40,7 @@ function Navbar({
       <div className="top-nav">
 
         <div className="logo">
-          The Daily<span>Sphere</span>
+          The Daily<span> Sphere</span>
         </div>
 
         <input
