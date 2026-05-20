@@ -6,7 +6,7 @@ return(
 
 <h3>
 
-NewsSphere
+TheDailySphere
 
 </h3>
 
