@@ -1,38 +1,46 @@
-export default async function handler(req,res){
+export default async function handler(req, res) {
 
-const API_KEY=
-process.env.OPENWEATHER_KEY;
+  const API_KEY = process.env.OPENWEATHER_KEY;
 
-const {
-lat,
-lon
-}=req.query;
+  if (!API_KEY) {
+    return res.status(500).json({ error: "OPENWEATHER_KEY is not set in .env.local" });
+  }
 
-try{
+  const { lat, lon } = req.query;
 
-const response=
-await fetch(
+  if (!lat || !lon) {
+    return res.status(400).json({ error: "lat and lon are required" });
+  }
 
-`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
+  try {
 
-);
+    const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`;
 
-const data=
-await response.json();
+    console.log("[weather] fetching:", url);
 
-res.status(200).json(data);
+    const response = await fetch(url);
+    const data     = await response.json();
 
-}
+    if (!response.ok) {
+      console.error("[weather] OWM error:", data);
+      return res.status(502).json({ error: "Weather API error" });
+    }
 
-catch{
+    // Return only what the frontend needs — keeps it clean
+    return res.status(200).json({
+      city:        data.name,
+      temp:        Math.round(data.main.temp),
+      feelsLike:   Math.round(data.main.feels_like),
+      humidity:    data.main.humidity,
+      description: data.weather[0].description,
+      icon:        data.weather[0].icon,
+      wind:        Math.round(data.wind.speed)
+    });
 
-res.status(500).json({
-
-error:
-"Weather error"
-
-});
-
-}
+  }
+  catch (error) {
+    console.error("[weather] handler error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 
 }

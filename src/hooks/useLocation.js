@@ -1,87 +1,60 @@
 import { useEffect, useState } from "react";
 
-export default function useLocation(){
+// India's geographic centre as the default fallback
+const INDIA_DEFAULT = {
+  country: "in",
+  city: "India",
+  lat: 20.5937,   // ← real coordinates so weather always loads
+  lon: 78.9629
+};
 
-const [location,setLocation]=useState({
+export default function useLocation() {
 
-country:"in",
-city:"India",
-lat:null,
-lon:null
+  const [location, setLocation] = useState(INDIA_DEFAULT);
 
-});
+  useEffect(() => {
 
-useEffect(()=>{
+    navigator.geolocation.getCurrentPosition(
 
-navigator.geolocation.getCurrentPosition(
+      // SUCCESS — user granted location permission
+      async (position) => {
 
-async(position)=>{
+        try {
 
-try{
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
 
-const lat=position.coords.latitude;
-const lon=position.coords.longitude;
+          // Reverse-geocode to get human-readable country + city name
+          const response = await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`
+          );
 
-const response=await fetch(
+          const data = await response.json();
 
-`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}`
+          setLocation({
+            country: data.countryCode?.toLowerCase() || "in",
+            city:    data.city || data.locality || "India",
+            lat,
+            lon
+          });
 
-);
+        }
+        catch (error) {
+          // Reverse geocode failed — keep India defaults (already set)
+          console.log("[useLocation] reverse geocode failed:", error);
+        }
 
-const data=await response.json();
+      },
 
-setLocation({
+      // DENIED or unavailable — defaults already set in useState above
+      () => {
+        console.log("[useLocation] location denied — using India defaults");
+      }
 
-country:
-data.countryCode?.toLowerCase()
-||"in",
+    );
 
-city:
-data.city
-||
-data.locality
-||
-"India",
+  }, []);
 
-lat,
-lon
-
-});
-
-}
-
-catch{
-
-setLocation({
-
-country:"in",
-city:"India",
-lat:null,
-lon:null
-
-});
-
-}
-
-},
-
-()=>{
-
-setLocation({
-
-country:"in",
-city:"India",
-lat:null,
-lon:null
-
-});
-
-}
-
-);
-
-},[]);
-
-return location;
+  return location;
 
 }

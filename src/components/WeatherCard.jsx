@@ -1,33 +1,44 @@
-function WeatherCard({
+/**
+ * WeatherCard
+ * -----------
+ * Displays current weather using the shaped object returned by /api/weather.
+ * The API returns: { city, temp, feelsLike, humidity, description, icon, wind }
+ */
+function WeatherCard({ weather }) {
 
-weather
+  // Nothing to show yet (still loading or fetch failed)
+  if (!weather || !weather.city) return null;
 
-}){
+  const iconUrl = `https://openweathermap.org/img/wn/${weather.icon}.png`;
 
-if(!weather)
-return null;
+  return (
+    <div className="weather-card">
 
-return(
+      {/* City + icon */}
+      <div className="weather-main">
+        <img src={iconUrl} alt={weather.description} className="weather-icon" />
+        <span className="weather-city">{weather.city}</span>
+      </div>
 
-<div
-className="breaking-news"
->
+      {/* Temperature */}
+      <div className="weather-temp">
+        {weather.temp}°C
+      </div>
 
-🌤
+      {/* Details row */}
+      <div className="weather-details">
+        <span>Feels like {weather.feelsLike}°C</span>
+        <span>💧 {weather.humidity}%</span>
+        <span>💨 {weather.wind} m/s</span>
+      </div>
 
-{weather.name}
+      {/* Description */}
+      <div className="weather-desc">
+        {weather.description}
+      </div>
 
-•
-
-{weather.main.temp}°C
-
-•
-
-{weather.weather[0].main}
-
-</div>
-
-)
+    </div>
+  );
 
 }
 

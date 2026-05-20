@@ -1,122 +1,77 @@
-export default async function handler(req,res){
+export default async function handler(req, res) {
 
-const API_KEY=
-process.env.GNEWS_API_KEY;
+  const API_KEY = process.env.GNEWS_API_KEY;
 
-const {
+  if (!API_KEY) {
+    return res.status(500).json({ error: "GNEWS_API_KEY is not set in .env.local" });
+  }
 
-category="general",
-country="in",
-city="India",
-search="",
-lang="en"
+  const {
+    category = "general",
+    country  = "in",
+    city     = "India",
+    search   = "",
+    lang     = "en"   // "en" or "hi" — passed as-is to GNews
+  } = req.query;
 
-}=req.query;
+  try {
 
-try{
+    let url = "";
 
-let url="";
+    /* ── 1. SEARCH BAR takes priority over everything ── */
+    if (search.trim()) {
 
-const apiLanguage=
-lang==="hi"
-? "en"
-: lang;
+      // Search works in both en and hi
+      url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
+    }
 
-if(search.trim()){
+    /* ── 2. HINDI — GNews top-headlines has near-zero Hindi content
+            on the free tier. Use the search endpoint instead with a
+            broad query so we actually get results. ── */
+    else if (lang === "hi") {
 
-url=
+      const q = city !== "India"
+        ? `${city} ${category}`   // e.g. "Hyderabad sports"
+        : `${category} India`;    // e.g. "technology India"
 
-`https://gnews.io/api/v4/search?q=${encodeURIComponent(search)}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
+      url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=hi&max=10&apikey=${API_KEY}`;
 
-}
+    }
 
-else if(city!=="India"){
+    /* ── 3. CITY detected via geolocation (not default India) ── */
+    else if (city !== "India") {
 
-url=
+      url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(city + " " + category)}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
-`https://gnews.io/api/v4/search?q=${encodeURIComponent(city+" "+category)}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
+    }
 
-}
+    /* ── 4. DEFAULT: country-level top headlines ── */
+    else {
 
-else{
+      url = `https://gnews.io/api/v4/top-headlines?category=${category}&country=${country}&lang=${lang}&max=10&apikey=${API_KEY}`;
 
-url=
+    }
 
-`https://gnews.io/api/v4/top-headlines?category=${category}&country=${country}&lang=${apiLanguage}&max=10&apikey=${API_KEY}`;
+    console.log("[news] fetching:", url);
 
-}
+    const response = await fetch(url);
+    const data     = await response.json();
 
-const response=
-await fetch(url);
+    // GNews rate-limit or error surface
+    if (!response.ok) {
+      console.error("[news] GNews error:", data);
+      return res.status(200).json({ articles: [] });
+    }
 
-const data=
-await response.json();
+    return res.status(200).json({
+      articles: data.articles || []
+    });
 
-
-if(!response.ok){
-
-if(
-data.errors?.[0]
-?.includes(
-"request limit"
-)
-){
-
-return res.status(200).json({
-
-articles:[
-
-{
-
-title:
-"Daily request limit reached",
-
-description:
-"GNews free API limit reached. Please try again after reset.",
-
-url:"#",
-
-image:null
-
-}
-
-]
-
-});
-
-}
-
-return res.status(500).json({
-
-error:
-"Failed fetching news"
-
-});
-
-}
-
-
-return res.status(200).json({
-
-articles:
-data.articles || []
-
-});
-
-}
-
-catch(error){
-
-console.log(error);
-
-return res.status(500).json({
-
-error:
-"Internal server error"
-
-});
-
-}
+  }
+  catch (error) {
+    console.error("[news] handler error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 
 }
