@@ -6,6 +6,22 @@ language
 
 }){
 
+const fallbackDescription=
+
+language==="hi"
+?
+"विवरण उपलब्ध नहीं"
+:
+"No description";
+
+const readMoreLabel=
+
+language==="hi"
+?
+"और पढ़ें →"
+:
+"Read More →";
+
 return(
 
 <div className="news-card">
@@ -14,6 +30,10 @@ return(
 src={
 article.image ||
 "https://via.placeholder.com/400x250"
+}
+alt={
+article.title ||
+"News image"
 }
 />
 
@@ -45,26 +65,7 @@ article.title
 
 <p>
 
-{
-
-language==="hi"
-
-?
-
-"हिंदी: " +
-(
-article.description ||
-"No description"
-)
-
-:
-
-(
-article.description ||
-"No description"
-)
-
-}
+{article.description || fallbackDescription}
 
 </p>
 
@@ -74,7 +75,7 @@ target="_blank"
 rel="noreferrer"
 >
 
-Read More →
+{readMoreLabel}
 
 </a>
 
