@@ -6,8 +6,8 @@ const translations = {
       technology: "Technology",
       business: "Business",
       sports: "Sports",
-      health: "Health"
-    }
+      health: "Health",
+    },
   },
 
   hi: {
@@ -17,9 +17,9 @@ const translations = {
       technology: "तकनीक",
       business: "व्यापार",
       sports: "खेल",
-      health: "स्वास्थ्य"
-    }
-  }
+      health: "स्वास्थ्य",
+    },
+  },
 };
 
 function Navbar({
@@ -29,25 +29,17 @@ function Navbar({
   search,
   setSearch,
   language,
-  setLanguage
+  setLanguage,
 }) {
-
   const t = translations[language] || translations.en;
 
   function toggleLanguage() {
-    setLanguage(
-      language === "en"
-        ? "hi"
-        : "en"
-    );
+    setLanguage(language === "en" ? "hi" : "en");
   }
 
   return (
-
     <nav className="navbar">
-
       <div className="top-nav">
-
         {/* Logo */}
         <div className="logo">
           The Daily<span> Sphere</span>
@@ -60,56 +52,31 @@ function Navbar({
           className="search-box"
           placeholder={t.placeholder}
           value={search}
-          onChange={(e) =>
-            setSearch(e.target.value)
-          }
+          onChange={(e) => setSearch(e.target.value)}
         />
 
         {/* Language Toggle */}
 
-        <button
-          className="language-btn"
-          onClick={toggleLanguage}
-        >
-          {language === "en"
-            ? "हिंदी"
-            : "English"}
+        <button className="language-btn" onClick={toggleLanguage}>
+          {language === "en" ? "हिंदी" : "English"}
         </button>
-
       </div>
 
       {/* Categories */}
 
       <ul className="nav-links">
-
         {categories.map((item) => (
-
           <li
             key={item}
-            className={
-              category === item
-                ? "active"
-                : ""
-            }
-            onClick={() =>
-              setCategory(item)
-            }
+            className={category === item ? "active" : ""}
+            onClick={() => setCategory(item)}
           >
-
-            {
-              t.categories[item] || item
-            }
-
+            {t.categories[item] || item}
           </li>
-
         ))}
-
       </ul>
-
     </nav>
-
   );
-
 }
 
 export default Navbar;

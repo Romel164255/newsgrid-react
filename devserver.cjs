@@ -13,10 +13,10 @@
  * Requires: npm install -D express dotenv
  */
 
-require('dotenv').config({ path: '.env.local' });
+require("dotenv").config({ path: ".env.local" });
 
-const express = require('express');
-const app     = express();
+const express = require("express");
+const app = express();
 
 app.use(express.json());
 
@@ -29,9 +29,9 @@ function makeHandler(modulePath) {
   };
 }
 
-app.all('/api/news',    makeHandler('./api/news.js'));
-app.all('/api/weather', makeHandler('./api/weather.js'));
+app.all("/api/news", makeHandler("./api/news.js"));
+app.all("/api/weather", makeHandler("./api/weather.js"));
 
 app.listen(3001, () => {
-  console.log('Dev API server running on http://localhost:3001');
+  console.log("Dev API server running on http://localhost:3001");
 });

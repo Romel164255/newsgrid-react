@@ -3,7 +3,7 @@ const HINDI_CATEGORY_TERMS = {
   technology: "तकनीक",
   business: "व्यापार",
   sports: "खेल",
-  health: "स्वास्थ्य"
+  health: "स्वास्थ्य",
 };
 
 const MAX_ARTICLES = 10;
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
   if (!API_KEY) {
     return res.status(500).json({
-      error: "GNEWS_API_KEY missing"
+      error: "GNEWS_API_KEY missing",
     });
   }
 
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     country = "in",
     city = "India",
     search = "",
-    lang = "en"
+    lang = "en",
   } = req.query;
 
   const safeCategory = String(category).toLowerCase();
@@ -54,10 +54,7 @@ export default async function handler(req, res) {
   const safeSearch = String(search).trim();
 
   // Hindi news is much more consistent from Indian sources.
-  const effectiveCountry =
-    safeLanguage === "hi"
-      ? "in"
-      : safeCountry;
+  const effectiveCountry = safeLanguage === "hi" ? "in" : safeCountry;
 
   try {
     let url = "";
@@ -65,9 +62,7 @@ export default async function handler(req, res) {
     if (safeSearch) {
       const hindiBoost = HINDI_CATEGORY_TERMS[safeCategory] || "समाचार";
       const query =
-        safeLanguage === "hi"
-          ? `${safeSearch} ${hindiBoost}`
-          : safeSearch;
+        safeLanguage === "hi" ? `${safeSearch} ${hindiBoost}` : safeSearch;
 
       url = buildUrl(
         "search",
@@ -75,12 +70,11 @@ export default async function handler(req, res) {
           q: query,
           lang: safeLanguage,
           country: effectiveCountry,
-          in: "title,description"
+          in: "title,description",
         },
-        API_KEY
+        API_KEY,
       );
-    }
-    else if (safeCity && safeCity.toLowerCase() !== "india") {
+    } else if (safeCity && safeCity.toLowerCase() !== "india") {
       const hindiBoost = HINDI_CATEGORY_TERMS[safeCategory] || "समाचार";
       const cityQuery =
         safeLanguage === "hi"
@@ -93,20 +87,19 @@ export default async function handler(req, res) {
           q: cityQuery,
           lang: safeLanguage,
           country: effectiveCountry,
-          in: "title,description"
+          in: "title,description",
         },
-        API_KEY
+        API_KEY,
       );
-    }
-    else {
+    } else {
       url = buildUrl(
         "top-headlines",
         {
           category: safeCategory,
           country: effectiveCountry,
-          lang: safeLanguage
+          lang: safeLanguage,
         },
-        API_KEY
+        API_KEY,
       );
     }
 
@@ -119,9 +112,7 @@ export default async function handler(req, res) {
       return res.status(response.status).json(data);
     }
 
-    let articles = Array.isArray(data.articles)
-      ? data.articles
-      : [];
+    let articles = Array.isArray(data.articles) ? data.articles : [];
 
     // If Hindi request returns empty in search/city mode, try a Hindi headlines fallback.
     if (safeLanguage === "hi" && articles.length === 0) {
@@ -130,9 +121,9 @@ export default async function handler(req, res) {
         {
           category: safeCategory,
           country: "in",
-          lang: "hi"
+          lang: "hi",
         },
-        API_KEY
+        API_KEY,
       );
 
       console.log("Hindi fallback:", fallbackUrl);
@@ -147,11 +138,10 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ articles });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
     return res.status(500).json({
-      error: "Internal server error"
+      error: "Internal server error",
     });
   }
 }

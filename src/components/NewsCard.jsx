@@ -1,90 +1,29 @@
-function NewsCard({
+function NewsCard({ article, category, language }) {
+  const fallbackDescription =
+    language === "hi" ? "विवरण उपलब्ध नहीं" : "No description";
 
-article,
-category,
-language
+  const readMoreLabel = language === "hi" ? "और पढ़ें →" : "Read More →";
 
-}){
+  return (
+    <div className="news-card">
+      <img
+        src={article.image || "https://via.placeholder.com/400x250"}
+        alt={article.title || "News image"}
+      />
 
-const fallbackDescription=
+      <div className="news-content">
+        <div className="news-category">{category}</div>
 
-language==="hi"
-?
-"विवरण उपलब्ध नहीं"
-:
-"No description";
+        <h2>{language === "hi" ? "🇮🇳 " + article.title : article.title}</h2>
 
-const readMoreLabel=
+        <p>{article.description || fallbackDescription}</p>
 
-language==="hi"
-?
-"और पढ़ें →"
-:
-"Read More →";
-
-return(
-
-<div className="news-card">
-
-<img
-src={
-article.image ||
-"https://via.placeholder.com/400x250"
-}
-alt={
-article.title ||
-"News image"
-}
-/>
-
-<div className="news-content">
-
-<div className="news-category">
-
-{category}
-
-</div>
-
-<h2>
-
-{
-
-language==="hi"
-
-?
-
-"🇮🇳 " + article.title
-
-:
-
-article.title
-
-}
-
-</h2>
-
-<p>
-
-{article.description || fallbackDescription}
-
-</p>
-
-<a
-href={article.url}
-target="_blank"
-rel="noreferrer"
->
-
-{readMoreLabel}
-
-</a>
-
-</div>
-
-</div>
-
-)
-
+        <a href={article.url} target="_blank" rel="noreferrer">
+          {readMoreLabel}
+        </a>
+      </div>
+    </div>
+  );
 }
 
 export default NewsCard;

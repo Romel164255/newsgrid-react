@@ -1,31 +1,13 @@
-function Footer(){
+function Footer() {
+  return (
+    <footer className="footer">
+      <h3>The Daily Sphere</h3>
 
-return(
+      <p>Real-time global news</p>
 
-<footer className="footer">
-
-<h3>
-
-The Daily Sphere
-
-</h3>
-
-<p>
-
-Real-time global news
-
-</p>
-
-<span>
-
-©2026
-
-</span>
-
-</footer>
-
-);
-
+      <span>©2026</span>
+    </footer>
+  );
 }
 
 export default Footer;

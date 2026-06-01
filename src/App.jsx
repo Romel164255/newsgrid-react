@@ -1,6 +1,6 @@
 import "./App.css";
 
-import {useEffect,useState} from "react";
+import { useEffect, useState } from "react";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
@@ -10,242 +10,103 @@ import WeatherCard from "./components/WeatherCard";
 
 import useLocation from "./hooks/useLocation";
 
-import {getNews} from "./services/newsApi";
-import {getWeather} from "./services/weatherApi";
+import { getNews } from "./services/newsApi";
+import { getWeather } from "./services/weatherApi";
 
-function App(){
+function App() {
+  const { country, city, lat, lon } = useLocation();
 
-const {
+  const [articles, setArticles] = useState([]);
+  const [weather, setWeather] = useState(null);
 
-country,
-city,
-lat,
-lon
+  const [loading, setLoading] = useState(true);
 
-}=useLocation();
+  const [category, setCategory] = useState("general");
 
+  const [search, setSearch] = useState("");
 
-const[articles,setArticles]=useState([]);
-const[weather,setWeather]=useState(null);
+  const [language, setLanguage] = useState("en");
 
-const[loading,setLoading]=useState(true);
+  const categories = ["general", "technology", "business", "sports", "health"];
 
-const[category,setCategory]=useState(
-"general"
-);
+  /* NEWS DEBOUNCE */
 
-const[search,setSearch]=useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchNews();
+    }, 500);
 
-const[language,setLanguage]=useState(
-"en"
-);
+    return () => clearTimeout(timer);
+  }, [category, country, city, search, language]);
 
+  /* WEATHER */
 
-const categories=[
+  useEffect(() => {
+    fetchWeather();
+  }, [lat, lon]);
 
-"general",
-"technology",
-"business",
-"sports",
-"health"
+  async function fetchNews() {
+    try {
+      setLoading(true);
 
-];
+      const data = await getNews(category, country, city, search, language);
 
+      setArticles(data);
+    } catch {
+      setArticles([]);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-/* NEWS DEBOUNCE */
+  async function fetchWeather() {
+    if (!lat || !lon) return;
 
-useEffect(()=>{
+    try {
+      const data = await getWeather(lat, lon);
 
-const timer=
+      setWeather(data);
+    } catch {
+      setWeather(null);
+    }
+  }
 
-setTimeout(()=>{
+  return (
+    <div className="app">
+      <Navbar
+        categories={categories}
+        category={category}
+        setCategory={setCategory}
+        search={search}
+        setSearch={setSearch}
+        language={language}
+        setLanguage={setLanguage}
+      />
 
-fetchNews();
+      <div className="news-banner">THE DAILY SPHERE • {city.toUpperCase()}</div>
 
-},500);
+      <div className="top-bar">
+        <WeatherCard weather={weather} />
+      </div>
 
-return()=>clearTimeout(timer);
+      {loading && <div className="loading">Loading News...</div>}
 
-},
-[
-category,
-country,
-city,
-search,
-language
-]);
+      {!loading && articles.length > 0 && <Hero article={articles[0]} />}
 
+      <section className="news-grid">
+        {articles.slice(1).map((article, index) => (
+          <NewsCard
+            key={index}
+            article={article}
+            category={category}
+            language={language}
+          />
+        ))}
+      </section>
 
-/* WEATHER */
-
-useEffect(()=>{
-
-fetchWeather();
-
-},
-[
-lat,
-lon
-]);
-
-
-async function fetchNews(){
-
-try{
-
-setLoading(true);
-
-const data=
-
-await getNews(
-
-category,
-country,
-city,
-search,
-language
-
-);
-
-setArticles(data);
-
-}
-
-catch{
-
-setArticles([]);
-
-}
-
-finally{
-
-setLoading(false);
-
-}
-
-}
-
-
-
-async function fetchWeather(){
-
-if(!lat||!lon)return;
-
-try{
-
-const data=
-
-await getWeather(
-lat,
-lon
-);
-
-setWeather(data);
-
-}
-
-catch{
-
-setWeather(null);
-
-}
-
-}
-
-
-return(
-
-<div className="app">
-
-<Navbar
-
-categories={categories}
-
-category={category}
-setCategory={setCategory}
-
-search={search}
-setSearch={setSearch}
-
-language={language}
-setLanguage={setLanguage}
-
-/>
-
-
-<div className="news-banner">
-
-THE DAILY SPHERE • {city.toUpperCase()}
-
-</div>
-
-
-<div className="top-bar">
-
-<WeatherCard
-weather={weather}
-/>
-
-</div>
-
-
-{
-
-loading&&
-
-<div className="loading">
-
-Loading News...
-
-</div>
-
-}
-
-
-{
-
-!loading &&
-articles.length>0 &&
-
-<Hero
-article={articles[0]}
-/>
-
-}
-
-
-<section className="news-grid">
-
-{
-
-articles
-.slice(1)
-.map((article,index)=>(
-
-<NewsCard
-
-key={index}
-
-article={article}
-
-category={category}
-
-language={language}
-
-/>
-
-))
-
-}
-
-</section>
-
-<Footer/>
-
-</div>
-
-)
-
+      <Footer />
+    </div>
+  );
 }
 
 export default App;
